@@ -8,10 +8,25 @@ using namespace std;
 
 int numWordsIn(const string& sentence) {
   // TODO student
-  return 0;
+  istringstream stream(sentence);
+  string word;
+  int count = 0;
+
+  while (stream >> word) {
+    count++;
+  }
+  return count;
 }
 
 int main() {
-  // TODO student
+  string sentence;
+
+  cout << "Enter a sentence please: ";
+  getline(cin, sentence);
+
+  int wordCount = numWordsIn(sentence);
+
+  cout << "# of words: " << wordCount << endl;
+
   return 0;
 }

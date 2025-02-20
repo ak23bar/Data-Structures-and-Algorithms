@@ -86,4 +86,5 @@
   "C_Cpp.default.compilerPath": "/usr/bin/clang++",
   "debug.onTaskErrors": "abort",
   "lldb.showDisassembly": "never",
+  "C_Cpp.errorSquiggles": "disabled",
 }

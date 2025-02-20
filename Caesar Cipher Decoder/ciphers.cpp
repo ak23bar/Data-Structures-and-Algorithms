@@ -1,9 +1,14 @@
+// CS 251: Project 1: Ciphers
+// Edited by: Akbar Aman
 #include <cctype>
 #include <cstdlib>
 #include <fstream>
+#include <iomanip>  // added library for setprecision (used in SubstDec region)
 #include <iostream>
+#include <limits>  // added library for numeric_limits (used in SubstDec region)
 #include <sstream>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 #include "include/caesar_dec.h"
@@ -30,10 +35,48 @@ const string ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
  * Print instructions for using the program.
  */
 void printMenu();
+void decryptSubstCipherFileCommand(const QuadgramScorer& scorer);
 
 int main() {
   Random::seed(time(NULL));
   string command;
+
+  // Open and read dictionary
+  ifstream dataFS;
+  dataFS.open("dictionary.txt");
+  if (!dataFS.is_open()) {
+    cout << "Failed to open dictionary" << endl;
+    return 1;
+  }
+
+  vector<string> dictionary;
+  string temp;
+  while (dataFS >> temp) {
+    dictionary.push_back(temp);
+  }
+  dataFS.close();
+
+  // Read quadgrams
+  vector<string> quadgrams;
+  vector<int> counts;
+  ifstream quadFS("english_quadgrams.txt");
+
+  if (!quadFS.is_open()) {
+    cout << "Failed to open english_quadgrams" << endl;
+    return 1;
+  }
+
+  string line;
+  while (getline(quadFS, line)) {
+    size_t comma = line.find(',');
+    if (comma != string::npos) {
+      quadgrams.push_back(line.substr(0, comma));
+      counts.push_back(stoi(line.substr(comma + 1)));
+    }
+  }
+  quadFS.close();
+
+  QuadgramScorer scorer(quadgrams, counts);
 
   cout << "Welcome to Ciphers!" << endl;
   cout << "-------------------" << endl;
@@ -41,10 +84,7 @@ int main() {
 
   do {
     printMenu();
-    cout << endl << "Enter a command (case does not matter): ";
-
-    // Use getline for all user input to avoid needing to handle
-    // input buffer issues relating to using both >> and getline
+    cout << endl << "Enter a command (case does not matter!): ";
     getline(cin, command);
     cout << endl;
 
@@ -54,6 +94,20 @@ int main() {
               "generator: ";
       getline(cin, seed_str);
       Random::seed(stoi(seed_str));
+    } else if (command == "C" || command == "c") {
+      caesarEncryptCommand();
+    } else if (command == "D" || command == "d") {
+      caesarDecryptCommand(dictionary);
+    } else if (command == "E" || command == "e") {
+      computeEnglishnessCommand(scorer);
+    } else if (command == "A" || command == "a") {
+      applyRandSubstCipherCommand();
+    } else if (command == "S" || command == "s") {
+      decryptSubstCipherCommand(scorer);
+    } else if (command == "F" || command == "f") {
+      decryptSubstCipherFileCommand(scorer);
+    } else if (command != "x" && command != "X" && !cin.eof()) {
+      cout << "Invalid command. Try again." << endl;
     }
 
     cout << endl;
@@ -83,17 +137,48 @@ void printMenu() {
 #pragma region CaesarEnc
 
 char rot(char c, int amount) {
-  // TODO: student
-  return 'A';
+  size_t pos = ALPHABET.find(c);
+  if (pos == string::npos) {
+    return c;
+  }
+
+  int newPos = (pos + amount) % 26;
+
+  // Wrap around for negative rotation cases
+  if (newPos < 0) {
+    newPos += 26;
+  }
+
+  return ALPHABET[newPos];
 }
 
 string rot(const string& line, int amount) {
-  // TODO: student
-  return "";
+  string result;
+
+  for (char c : line) {
+    if (isalpha(c)) {
+      result += rot(toupper(c), amount);
+    } else if (isspace(c)) {
+      result += c;
+    }
+  }
+
+  return result;
 }
 
 void caesarEncryptCommand() {
-  // TODO: student
+  cout << "Enter the text to encrypt: ";
+  string text;
+  getline(cin, text);
+
+  cout << "Enter the amount of rotation: ";
+  string amountStr;
+  getline(cin, amountStr);
+
+  int amount = stoi(amountStr);
+
+  string encrypted = rot(text, amount);
+  cout << "Encrypted text: " << encrypted << endl;
 }
 
 #pragma endregion CaesarEnc
@@ -101,31 +186,106 @@ void caesarEncryptCommand() {
 #pragma region CaesarDec
 
 void rot(vector<string>& strings, int amount) {
-  // TODO: student
+  amount = amount % 26;  // Normalize
+
+  for (string& str : strings) {
+    for (char& ch : str) {
+      if (isalpha(ch)) {
+        char base = isupper(ch) ? 'A' : 'a';
+        int shifted = ch - base + amount;  // addition for decryption
+        shifted = (shifted + 26) % 26;     // wraparound
+        ch = base + shifted;
+      }
+    }
+  }
 }
 
 string clean(const string& s) {
-  // TODO: student
-  return "";
+  string result;
+  for (char ch : s) {
+    if (isalpha(ch)) {
+      result += toupper(ch);
+    }
+  }
+  return result;
 }
 
 vector<string> splitBySpaces(const string& s) {
-  // TODO: student
-  return vector<string>{};
+  vector<string> words;
+  string word;
+
+  for (char ch : s) {
+    if (ch == ' ' || ch == '\n') {  // newline handling
+      if (!word.empty()) {
+        words.push_back(word);
+        word.clear();
+      }
+    } else {
+      word += ch;
+    }
+  }
+  if (!word.empty()) {
+    words.push_back(word);
+  }
+  return words;
 }
 
 string joinWithSpaces(const vector<string>& words) {
-  // TODO: student
-  return "";
+  if (words.empty()) return "";
+
+  string result;
+  for (size_t i = 0; i < words.size(); ++i) {
+    if (i > 0) result += " ";
+    result += words[i];
+  }
+  return result;
 }
 
 int numWordsIn(const vector<string>& words, const vector<string>& dict) {
-  // TODO: student
-  return 0;
+  unordered_set<string> dictSet;
+  for (const string& word : dict) {
+    dictSet.insert(word);
+  }
+
+  int count = 0;
+  for (const string& word : words) {
+    if (dictSet.count(word)) {
+      count++;
+    }
+  }
+  return count;
 }
 
 void caesarDecryptCommand(const vector<string>& dict) {
-  // TODO: student
+  string input;
+  getline(cin, input);
+  if (input.empty()) {
+    cout << "No good decryptions found" << endl;
+    return;
+  }
+
+  // split by spaces, then clean each word
+  vector<string> words = splitBySpaces(input);
+  for (string& word : words) {
+    word = clean(word);
+  }
+
+  bool found = false;
+  for (int shift = 0; shift < 26; ++shift) {
+    vector<string> rotated = words;  // fresh start
+    rot(rotated, shift);
+
+    // Check if more than half the words are in dictionary
+    int matches = numWordsIn(rotated, dict);
+    if (matches > rotated.size() / 2) {
+      cout << joinWithSpaces(rotated) << endl;
+      found = true;
+    }
+  }
+
+  if (!found) {
+    cout << "No good decryptions found" << endl;
+  }
 }
 
 #pragma endregion CaesarDec
@@ -133,12 +293,24 @@ void caesarDecryptCommand(const vector<string>& dict) {
 #pragma region SubstEnc
 
 string applySubstCipher(const vector<char>& cipher, const string& s) {
-  // TODO: student
-  return "";
+  string result;
+  for (char c : s) {
+    if (isalpha(c)) {
+      char upperC = toupper(c);
+      result += cipher[upperC - 'A'];  // Map based on the cipher
+    } else {
+      result += c;
+    }
+  }
+  return result;
 }
 
 void applyRandSubstCipherCommand() {
-  // TODO: student
+  vector<char> cipher = genRandomSubstCipher();
+  string input;
+  getline(cin, input);
+  string encrypted = applySubstCipher(cipher, input);
+  cout << encrypted << endl;
 }
 
 #pragma endregion SubstEnc
@@ -146,22 +318,125 @@ void applyRandSubstCipherCommand() {
 #pragma region SubstDec
 
 double scoreString(const QuadgramScorer& scorer, const string& s) {
-  // TODO: student
-  return 0.0;
+  if (s.length() < 4) {
+    return 0.0;
+  }
+
+  string cleanedStr = clean(s);
+  double score = 0.0;
+
+  for (size_t i = 0; i + 3 < cleanedStr.length(); ++i) {
+    string quad = cleanedStr.substr(i, 4);
+    score += scorer.getScore(quad);
+  }
+
+  return score;
 }
 
 void computeEnglishnessCommand(const QuadgramScorer& scorer) {
-  // TODO: student
+  cout << "Enter a string to score: ";
+  string temp;
+  getline(cin, temp);
+
+  // redudnant call but does not matter
+  temp = clean(temp);
+
+  double score = scoreString(scorer, temp);
+
+  cout << "Englishness: " << score << endl;
 }
 
 vector<char> decryptSubstCipher(const QuadgramScorer& scorer,
                                 const string& ciphertext) {
-  // TODO: student
-  return vector<char>{};
+  string cleanText = clean(ciphertext);
+  vector<char> bestCipherOverall(26);
+  double bestScoreOverall = -numeric_limits<double>::infinity();
+
+  for (int run = 0; run < 20; ++run) {
+    vector<char> currentCipher = genRandomSubstCipher();
+    vector<char> bestCipherThisRun = currentCipher;
+    string decrypted = applySubstCipher(currentCipher, cleanText);
+    double bestScoreThisRun = scoreString(scorer, decrypted);
+
+    int noImprovements = 0;
+    while (noImprovements < 1500) {
+      int pos1 = Random::randInt(25);
+      int pos2;
+      do {
+        pos2 = Random::randInt(25);
+      } while (pos2 == pos1);
+
+      swap(currentCipher[pos1], currentCipher[pos2]);
+      decrypted = applySubstCipher(currentCipher, cleanText);
+      double currentScore = scoreString(scorer, decrypted);
+
+      if (currentScore > bestScoreThisRun) {
+        bestScoreThisRun = currentScore;
+        bestCipherThisRun = currentCipher;
+        noImprovements = 0;
+      } else {
+        swap(currentCipher[pos1], currentCipher[pos2]);
+        noImprovements++;
+      }
+    }
+
+    if (bestScoreThisRun > bestScoreOverall) {
+      bestScoreOverall = bestScoreThisRun;
+      bestCipherOverall = bestCipherThisRun;
+    }
+  }
+
+  return bestCipherOverall;
 }
 
 void decryptSubstCipherCommand(const QuadgramScorer& scorer) {
-  // TODO: student
+  string input;
+  getline(cin, input);
+
+  if (input.empty()) {
+    for (char c = 'A'; c <= 'Z'; ++c) {
+      cout << c;
+      if (c != 'Z') cout << " ";
+    }
+    cout << endl;
+    return;
+  }
+
+  vector<char> cipher = decryptSubstCipher(scorer, input);
+  string decrypted = applySubstCipher(cipher, input);
+  cout << decrypted << endl;
 }
+
+void decryptSubstCipherFileCommand(const QuadgramScorer& scorer) {
+  string inputFilename, outputFilename;
+  cout << "Enter filename with text to substitution-cipher decrypt: ";
+  getline(cin, inputFilename);
+  cout << "Enter filename to write results to: ";
+  getline(cin, outputFilename);
+
+  ifstream inputFile(inputFilename);
+  if (!inputFile.is_open()) {
+    cout << "Failed to open input file: " << inputFilename << endl;
+    return;
+  }
+
+  stringstream buffer;
+  buffer << inputFile.rdbuf();
+  string ciphertext = buffer.str();
+  inputFile.close();
+
+  vector<char> bestCipher = decryptSubstCipher(scorer, ciphertext);
+  string decrypted = applySubstCipher(bestCipher, ciphertext);
+
+  ofstream outputFile(outputFilename);
+  if (!outputFile.is_open()) {
+    cout << "Failed to open output file: " << outputFilename << endl;
+    return;
+  }
+
+  outputFile << decrypted;
+  outputFile.close();
+}
+// 58/58 test cases passed: =)
 
 #pragma endregion SubstDec

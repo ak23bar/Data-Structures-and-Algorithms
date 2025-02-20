@@ -9,21 +9,25 @@
 
 using namespace std;
 
-map<__________, ________> buildCounts(const vector<string>& artists) {
+map<string, int> buildCounts(const vector<string>& artists) {
   // The returned map should answer the question:
   //     How many weeks has this artist had a number
   //     one song in the Billboard top 100?
 
-  // TODO by student
+  map<string, int> counts;
+  for(const string& artist : artists){
+    counts[artist]++;
+  }
+  return counts;
 }
 
-map<__________, ________> buildLetterIndex(const vector<string>& artists) {
-  // The returned map should answer the question:
-  //     What are the artists who have had a #1 song in the
-  //     Billboard top 100, whose name start with the given
-  //     character?
-
-  // TODO by student
+map<char, set<string>> buildLetterIndex(const vector<string>& artists) {
+ map<char, set<string>> letterIndex;
+ for(const string& artist : artists){
+  char firstLetter = artist[0];
+  letterIndex[firstLetter].insert(artist);
+}
+return letterIndex;
 }
 
 int main() {

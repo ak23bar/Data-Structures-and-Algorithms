@@ -8,11 +8,22 @@
 using namespace std;
 
 void processVotesMap(ifstream& file, map<string, int>& restVotes) {
-  // TODO BY STUDENT
+  string restaurant;
+  while (getline(file, restaurant)) {
+    restVotes[restaurant]++;
+  }
 }
 
 string findMostVotedMap(const map<string, int>& restVotes) {
-  // TODO BY STUDENT
+  string mostVoted;
+  int maxVotes = 0;
 
-  return "";
+  for (const auto& entry : restVotes) {
+    if (entry.second > maxVotes) {
+      maxVotes = entry.second;
+      mostVoted = entry.first;
+    }
+  }
+
+  return mostVoted;
 }

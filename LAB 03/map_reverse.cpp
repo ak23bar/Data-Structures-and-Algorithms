@@ -11,10 +11,14 @@ using namespace std;
  * For example, the map `{{"key", "value"}}` would be reversed to the map
  * `{{"value", "key"}}`.
  */
-map<string, string> reverseMap(map<string, string> m) {
-  // TODO student: implement!
-  return {};
+map<string, set<string>> reverseMap(const map<string, string>& m) {
+    map<string, set<string>> reversed;
+    for (const auto& pair : m) {
+        reversed[pair.second].insert(pair.first);  // Map value to key(s)
+    }
+    return reversed;
 }
+
 
 int main() {
   // Because you're changing the signature, we don't have tests for this

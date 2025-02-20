@@ -11,7 +11,7 @@ int main() {
   cout << "Enter a filename: ";
   getline(cin, filename);
 
-  // This will not work until we're done with the project!
+  // This works becuz I'm done with the project!
   searchEngine(filename);
   return 0;
 }
