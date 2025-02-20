@@ -1,0 +1,26 @@
+{
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "preLaunchTask": "build memory",
+      "name": "Debug memory.cpp task",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "ASAN_OPTIONS": "abort_on_error=1:detect_leaks=0",
+      },
+      "program": "${workspaceFolder}/memory",
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "preLaunchTask": "build ourvector",
+      "name": "Debug ourvector task",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "ASAN_OPTIONS": "abort_on_error=1:detect_leaks=1",
+      },
+      "program": "${workspaceFolder}/ourvector",
+    },
+  ],
+}

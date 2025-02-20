@@ -1,0 +1,74 @@
+{
+  "configurations": [
+    // === Dedup ===
+    {
+      "type": "lldb",
+      "request": "launch",
+      "preLaunchTask": "compile references",
+      "name": "Debug references",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "ASAN_OPTIONS": "abort_on_error=1:detect_leaks=0",
+      },
+      "program": "${workspaceFolder}/references",
+    },
+    // === Dedup ===
+    {
+      "type": "lldb",
+      "request": "launch",
+      "preLaunchTask": "compile dedup",
+      "name": "Debug dedup",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "ASAN_OPTIONS": "abort_on_error=1:detect_leaks=0",
+      },
+      "program": "${workspaceFolder}/dedup",
+    },
+    // === Programming I ===
+    {
+      "type": "lldb",
+      "request": "launch",
+      "preLaunchTask": "compile lab2",
+      "name": "Debug Lab 2 main",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "ASAN_OPTIONS": "abort_on_error=1:detect_leaks=0",
+      },
+      "program": "${workspaceFolder}/lab2",
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "preLaunchTask": "compile lab2_tests",
+      "name": "Debug Lab 2 main",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "ASAN_OPTIONS": "abort_on_error=1:detect_leaks=0",
+      },
+      "program": "${workspaceFolder}/lab2_tests",
+    },
+    // === Programming II ===
+    {
+      "type": "lldb",
+      "request": "launch",
+      "preLaunchTask": "compile concat",
+      "name": "Debug concat main",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "ASAN_OPTIONS": "abort_on_error=1:detect_leaks=0",
+      },
+      "program": "${workspaceFolder}/concat",
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "preLaunchTask": "compile concat_tests",
+      "name": "Debug concat tests",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "ASAN_OPTIONS": "abort_on_error=1:detect_leaks=0",
+      },
+      "program": "${workspaceFolder}/concat_tests",
+    },
+  ],
+}

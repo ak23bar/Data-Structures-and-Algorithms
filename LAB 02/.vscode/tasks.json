@@ -1,0 +1,69 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    // References
+    {
+      "type": "shell",
+      "label": "compile references",
+      "command": "make references",
+      "presentation": {
+        "panel": "shared",
+        "clear": true,
+      },
+      "group": "build"
+    },
+    // Dedup
+    {
+      "type": "shell",
+      "label": "compile dedup",
+      "command": "make dedup",
+      "presentation": {
+        "panel": "shared",
+        "clear": true,
+      },
+      "group": "build"
+    },
+    // Programming I
+    {
+      "type": "shell",
+      "label": "compile lab2",
+      "command": "make lab2",
+      "presentation": {
+        "panel": "shared",
+        "clear": true,
+      },
+      "group": "build"
+    },
+    {
+      "type": "shell",
+      "label": "compile lab2_tests",
+      "command": "make lab2_tests",
+      "presentation": {
+        "panel": "shared",
+        "clear": true,
+      },
+      "group": "build"
+    },
+    // Programming II
+    {
+      "type": "shell",
+      "label": "compile concat",
+      "command": "make concat",
+      "presentation": {
+        "panel": "shared",
+        "clear": true,
+      },
+      "group": "build"
+    },
+    {
+      "type": "shell",
+      "label": "compile concat_tests",
+      "command": "make concat_tests",
+      "presentation": {
+        "panel": "shared",
+        "clear": true,
+      },
+      "group": "build"
+    },
+  ]
+}
