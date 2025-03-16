@@ -1,0 +1,78 @@
+
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "build string tree tests",
+      "command": "make string_tree_tests",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "close": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true,
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "type": "shell",
+      "label": "run ctor tests",
+      "command": "make test_ctor tests",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "close": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true,
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "type": "shell",
+      "label": "run serialize tests",
+      "command": "make test_serialize",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "close": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true,
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "type": "shell",
+      "label": "run all tests",
+      "command": "make test_all",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "close": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true,
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}

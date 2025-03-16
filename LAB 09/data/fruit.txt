@@ -1,0 +1,9 @@
+I: apple
+I: orange
+L: pineapple
+L: kiwi
+I: lime
+I: lemon
+L: watermelon
+L: strawberry
+L: mango

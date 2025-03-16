@@ -1,0 +1,48 @@
+{
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "preLaunchTask": "run ctor tests",
+      "name": "Debug ctor task",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "ASAN_OPTIONS": "abort_on_error=1:detect_leaks=1",
+      },
+      "program": "${workspaceFolder}/string_tree_tests",
+      "args": [
+        "--gtest_color=yes",
+        "--gtest_filter=StringTreeCtor*",
+      ],
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "preLaunchTask": "run serialize tests",
+      "name": "Debug serialize task",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "ASAN_OPTIONS": "abort_on_error=1:detect_leaks=1",
+      },
+      "program": "${workspaceFolder}/string_tree_tests",
+      "args": [
+        "--gtest_color=yes",
+        "--gtest_filter=StringTreeSerialize*",
+      ],
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "preLaunchTask": "run all tests",
+      "name": "Debug all tasks",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "ASAN_OPTIONS": "abort_on_error=1:detect_leaks=1",
+      },
+      "program": "${workspaceFolder}/string_tree_tests",
+      "args": [
+        "--gtest_color=yes",
+      ],
+    },
+  ],
+}

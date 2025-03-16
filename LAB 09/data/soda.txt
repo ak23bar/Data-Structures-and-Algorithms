@@ -1,0 +1,9 @@
+I: Dr. Pepper
+I: Sprite
+I: Mountain Dew
+L: Coke
+L: Root Beer
+L: Ginger Ale
+I: Fanta
+L: Sunkist
+L: Pepsi
